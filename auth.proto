@@ -1,0 +1,55 @@
+syntax="proto3";
+
+package auth;
+
+option go_package = "github.com/4epyx/authrpc";
+
+service RegisterService {
+    rpc RegisterUser(RegisterUserRequest) returns (BoolResponse) {}
+}
+
+service LoginService{
+    rpc LoginUser(LoginRequest) returns (AccessToken) {}
+}
+
+service AuthorizationService {
+    rpc IsAuthorized(AccessToken) returns (BoolResponse) {}
+}
+
+service UserDataService {
+    rpc GetCurrentUserData(Empty) returns (User) {}
+    rpc GetOtherUserData(UserId) returns (OtherUser) {}
+}
+
+
+message RegisterUserRequest {
+    string email = 1;
+    string username = 2;
+    string password = 3;
+}
+message LoginRequest {
+    string login = 1;
+    string password = 2;
+}
+message AccessToken { 
+    string accessToken = 1;
+}
+
+message User {
+    int64 id = 1;
+    string email = 2;
+    string username = 3;
+    string password = 4;
+}
+message OtherUser {
+    int64 id = 1;
+    string username = 3;
+}
+message UserId {
+    int64 id = 1;
+}
+
+message BoolResponse {
+    bool flag = 1;
+}
+message Empty{}

@@ -3,11 +3,10 @@ package utils
 import (
 	"time"
 
-	"github.com/4epyx/authrpc/pb"
 	"github.com/golang-jwt/jwt"
 )
 
-func GenerateUserAccessToken(user *pb.User, secretKey string) (string, error) {
+func GenerateUserAccessToken(user *User, secretKey string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, jwt.MapClaims{
 		"user_id":    user.Id,
 		"user_email": user.Email,

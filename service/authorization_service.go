@@ -12,7 +12,7 @@ type AuthorizationService struct {
 	pb.UnimplementedAuthorizationServiceServer
 }
 
-func IsAuthorized(ctx context.Context, in *pb.AccessToken) (*pb.BoolResponse, error) {
+func (s *AuthorizationService) IsAuthorized(ctx context.Context, in *pb.AccessToken) (*pb.BoolResponse, error) {
 	_, err := utils.GetJWTClaims(in.AccessToken, os.Getenv("JWT_SECRET"))
 
 	return &pb.BoolResponse{Flag: err != nil}, err

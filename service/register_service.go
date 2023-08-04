@@ -6,7 +6,6 @@ import (
 	"github.com/4epyx/authrpc/pb"
 	"github.com/jackc/pgx"
 	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/grpc"
 )
 
 type registerService struct {
@@ -18,7 +17,7 @@ func NewRegisterService(db *pgx.ConnPool) *registerService {
 	return &registerService{db: db}
 }
 
-func (s *registerService) RegisterUser(ctx context.Context, in *pb.RegisterUserRequest, opts ...grpc.CallOption) (*pb.BoolResponse, error) {
+func (s *registerService) RegisterUser(ctx context.Context, in *pb.RegisterUserRequest) (*pb.BoolResponse, error) {
 	password, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.MinCost)
 	if err != nil {
 		return &pb.BoolResponse{Flag: false}, err

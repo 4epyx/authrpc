@@ -8,7 +8,6 @@ import (
 	"github.com/4epyx/authrpc/utils"
 	"github.com/jackc/pgx"
 	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/grpc"
 )
 
 type LoginService struct {
@@ -16,8 +15,9 @@ type LoginService struct {
 	pb.UnimplementedLoginServiceServer
 }
 
-func (s *LoginService) LoginUser(ctx context.Context, in *pb.LoginRequest, opts ...grpc.CallOption) (*pb.AccessToken, error) {
-	user := pb.User{}
+func (s *LoginService) LoginUser(ctx context.Context, in *pb.LoginRequest) (*pb.AccessToken, error) {
+
+	user := utils.User{}
 	if err := s.db.QueryRow("SELECT id, username, email, password FROM users WHERE username = $1 OR email = $1",
 		in.Login).Scan(&user.Id, &user.Username, &user.Email, &user.Password); err != nil {
 		return nil, err

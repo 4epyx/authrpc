@@ -7,20 +7,20 @@ import (
 )
 
 func GenerateUserAccessToken(user *User, secretKey string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id":    user.Id,
 		"user_email": user.Email,
 		"exp":        time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	return token.SignedString(secretKey)
+	return token.SignedString([]byte(secretKey))
 }
 
 func GetJWTClaims(token, secretKey string) (jwt.MapClaims, error) {
 	claims := jwt.MapClaims{}
 
 	if _, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		return []byte(secretKey), nil
 	}); err != nil {
 		return nil, err
 	}

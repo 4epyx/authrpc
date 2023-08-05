@@ -17,7 +17,11 @@ func NewPgxUserRepository(db *pgxpool.Pool) *PgxUserRepository {
 }
 
 func (r *PgxUserRepository) CreateUser(ctx context.Context, user *pb.RegisterUserRequest) error {
-	_, err := r.db.Exec(ctx, "INSERT INTO users (email. username, password) VALUES $1, $2, $3", user.Email, user.Username, user.Password)
+	if err := utils.ValidateUserData(user); err != nil {
+		return err
+	}
+
+	_, err := r.db.Exec(ctx, "INSERT INTO users (email, username, password) VALUES ($1, $2, $3)", user.Email, user.Username, user.Password)
 	return err
 }
 

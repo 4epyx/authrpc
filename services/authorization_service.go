@@ -12,8 +12,12 @@ type AuthorizationService struct {
 	pb.UnimplementedAuthorizationServiceServer
 }
 
+func NewAuthorizationService() *AuthorizationService {
+	return &AuthorizationService{}
+}
+
 func (s *AuthorizationService) IsAuthorized(ctx context.Context, in *pb.AccessToken) (*pb.BoolResponse, error) {
 	_, err := utils.GetJWTClaims(in.AccessToken, os.Getenv("JWT_SECRET"))
 
-	return &pb.BoolResponse{Flag: err != nil}, err
+	return &pb.BoolResponse{Flag: err == nil}, err
 }

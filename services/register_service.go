@@ -26,5 +26,5 @@ func (s *RegisterService) RegisterUser(ctx context.Context, in *pb.RegisterUserR
 
 	err = s.userRepository.CreateUser(ctx, in)
 
-	return &pb.BoolResponse{Flag: err != nil}, err
+	return &pb.BoolResponse{Flag: err == nil}, err
 }

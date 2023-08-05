@@ -21,7 +21,6 @@ func GetHeaderValue(ctx context.Context, headerName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	header := md[headerName]
 	if len(header) == 0 {
 		return "", fmt.Errorf("header %s not found", headerName)
@@ -31,12 +30,13 @@ func GetHeaderValue(ctx context.Context, headerName string) (string, error) {
 }
 
 func GetAuthorizationToken(ctx context.Context) (string, error) {
-	auth, err := GetHeaderValue(ctx, "Authorization")
+	auth, err := GetHeaderValue(ctx, "authorization")
 	if err != nil {
 		return "", err
 	}
 
-	token := strings.TrimPrefix(auth, "Token ")
+	token := strings.TrimPrefix(auth, "Bearer ")
+	fmt.Println(token)
 
 	return token, nil
 }

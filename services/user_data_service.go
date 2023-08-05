@@ -30,10 +30,11 @@ func (s *UserDataService) GetCurrentUserData(ctx context.Context, e *pb.Empty) (
 		return nil, err
 	}
 
-	userId, ok := claims["user_id"].(int64)
+	userIdFloat, ok := claims["user_id"].(float64)
 	if !ok {
 		return nil, fmt.Errorf("can not parse user id from token")
 	}
+	userId := int64(userIdFloat)
 
 	return s.userRepository.GetUserDataById(context.TODO(), userId)
 }

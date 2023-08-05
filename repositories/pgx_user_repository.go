@@ -27,7 +27,7 @@ func (r *PgxUserRepository) CreateUser(ctx context.Context, user *pb.RegisterUse
 
 func (r *PgxUserRepository) GetUserLoginData(ctx context.Context, login string) (*utils.User, error) {
 	user := &utils.User{}
-	if err := r.db.QueryRow(ctx, "SELECT id, email, password FROM users WHERE username = $1 OR email = $1", login).Scan(user.Id, user.Email, user.Password); err != nil {
+	if err := r.db.QueryRow(ctx, "SELECT id, email, password FROM users WHERE username = $1 OR email = $1", login).Scan(&user.Id, &user.Email, &user.Password); err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -35,7 +35,7 @@ func (r *PgxUserRepository) GetUserLoginData(ctx context.Context, login string) 
 
 func (r *PgxUserRepository) GetUserDataById(ctx context.Context, userId int64) (*pb.User, error) {
 	user := &pb.User{}
-	if err := r.db.QueryRow(ctx, "SELECT id, email, username FROM users WHERE id = $1", userId).Scan(user.Id, user.Email, user.Username); err != nil {
+	if err := r.db.QueryRow(ctx, "SELECT id, email, username FROM users WHERE id = $1", userId).Scan(&user.Id, &user.Email, &user.Username); err != nil {
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func (r *PgxUserRepository) GetUserDataById(ctx context.Context, userId int64) (
 func (r *PgxUserRepository) GetPublicUserDataById(ctx context.Context, userId int64) (*pb.OtherUser, error) {
 	user := &pb.OtherUser{}
 
-	if err := r.db.QueryRow(ctx, "SELECT username FROM user WHERE id = $1", userId).Scan(user.Username); err != nil {
+	if err := r.db.QueryRow(ctx, "SELECT username FROM users WHERE id = $1", userId).Scan(&user.Username); err != nil {
 		return nil, err
 	}
 

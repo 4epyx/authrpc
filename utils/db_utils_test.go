@@ -65,8 +65,7 @@ func TestConnectToDB(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			db, err := utils.ConnectToDB(tt.args.ctx, tt.args.connectionURL)
-			defer db.Close()
+			_, err := utils.ConnectToDB(tt.args.ctx, tt.args.connectionURL)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ConnectToDB() error = %v, wantErr %v", err, tt.wantErr)
 				return

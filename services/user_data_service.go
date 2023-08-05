@@ -15,7 +15,7 @@ type UserDataService struct {
 	pb.UnimplementedUserDataServiceServer
 }
 
-func NewUserDataRepository(userRepository repositories.UserRepository) *UserDataService {
+func NewUserDataService(userRepository repositories.UserRepository) *UserDataService {
 	return &UserDataService{userRepository: userRepository}
 }
 

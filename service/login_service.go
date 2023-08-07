@@ -1,21 +1,20 @@
-package services
+package service
 
 import (
 	"context"
-	"os"
 
 	"github.com/4epyx/authrpc/pb"
-	"github.com/4epyx/authrpc/repositories"
-	"github.com/4epyx/authrpc/utils"
+	"github.com/4epyx/authrpc/repository"
+	"github.com/4epyx/authrpc/util"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginService struct {
-	userRepository repositories.UserRepository
+	userRepository repository.UserRepository
 	pb.UnimplementedLoginServiceServer
 }
 
-func NewLoginService(userRepository repositories.UserRepository) *LoginService {
+func NewLoginService(userRepository repository.UserRepository) *LoginService {
 	return &LoginService{userRepository: userRepository}
 }
 
@@ -29,6 +28,6 @@ func (s *LoginService) LoginUser(ctx context.Context, in *pb.LoginRequest) (*pb.
 		return nil, err
 	}
 
-	token, err := utils.GenerateUserAccessToken(user, os.Getenv("JWT_SECRET"))
+	token, err := util.GenerateUserAccessToken(user, util.JwtSecret)
 	return &pb.AccessToken{AccessToken: token}, err
 }

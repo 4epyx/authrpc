@@ -1,11 +1,10 @@
-package services
+package service
 
 import (
 	"context"
-	"os"
 
 	"github.com/4epyx/authrpc/pb"
-	"github.com/4epyx/authrpc/utils"
+	"github.com/4epyx/authrpc/util"
 )
 
 type AuthorizationService struct {
@@ -17,7 +16,7 @@ func NewAuthorizationService() *AuthorizationService {
 }
 
 func (s *AuthorizationService) IsAuthorized(ctx context.Context, in *pb.AccessToken) (*pb.BoolResponse, error) {
-	_, err := utils.GetJWTClaims(in.AccessToken, os.Getenv("JWT_SECRET"))
+	_, err := util.GetJWTClaims(in.AccessToken, util.JwtSecret)
 
 	return &pb.BoolResponse{Flag: err == nil}, err
 }

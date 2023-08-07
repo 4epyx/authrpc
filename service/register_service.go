@@ -1,19 +1,19 @@
-package services
+package service
 
 import (
 	"context"
 
 	"github.com/4epyx/authrpc/pb"
-	"github.com/4epyx/authrpc/repositories"
+	"github.com/4epyx/authrpc/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type RegisterService struct {
-	userRepository repositories.UserRepository
+	userRepository repository.UserRepository
 	pb.UnimplementedRegisterServiceServer
 }
 
-func NewRegisterService(userRepository repositories.UserRepository) *RegisterService {
+func NewRegisterService(userRepository repository.UserRepository) *RegisterService {
 	return &RegisterService{userRepository: userRepository}
 }
 

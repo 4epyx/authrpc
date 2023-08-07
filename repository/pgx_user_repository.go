@@ -1,10 +1,10 @@
-package repositories
+package repository
 
 import (
 	"context"
 
 	"github.com/4epyx/authrpc/pb"
-	"github.com/4epyx/authrpc/utils"
+	"github.com/4epyx/authrpc/util"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -17,7 +17,7 @@ func NewPgxUserRepository(db *pgxpool.Pool) *PgxUserRepository {
 }
 
 func (r *PgxUserRepository) CreateUser(ctx context.Context, user *pb.RegisterUserRequest) error {
-	if err := utils.ValidateUserData(user); err != nil {
+	if err := util.ValidateUserData(user); err != nil {
 		return err
 	}
 
@@ -25,8 +25,8 @@ func (r *PgxUserRepository) CreateUser(ctx context.Context, user *pb.RegisterUse
 	return err
 }
 
-func (r *PgxUserRepository) GetUserLoginData(ctx context.Context, login string) (*utils.User, error) {
-	user := &utils.User{}
+func (r *PgxUserRepository) GetUserLoginData(ctx context.Context, login string) (*util.User, error) {
+	user := &util.User{}
 	if err := r.db.QueryRow(ctx, "SELECT id, email, password FROM users WHERE username = $1 OR email = $1", login).Scan(&user.Id, &user.Email, &user.Password); err != nil {
 		return nil, err
 	}

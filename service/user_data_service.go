@@ -1,31 +1,30 @@
-package services
+package service
 
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/4epyx/authrpc/pb"
-	"github.com/4epyx/authrpc/repositories"
-	"github.com/4epyx/authrpc/utils"
+	"github.com/4epyx/authrpc/repository"
+	"github.com/4epyx/authrpc/util"
 )
 
 type UserDataService struct {
-	userRepository repositories.UserRepository
+	userRepository repository.UserRepository
 	pb.UnimplementedUserDataServiceServer
 }
 
-func NewUserDataService(userRepository repositories.UserRepository) *UserDataService {
+func NewUserDataService(userRepository repository.UserRepository) *UserDataService {
 	return &UserDataService{userRepository: userRepository}
 }
 
 func (s *UserDataService) GetCurrentUserData(ctx context.Context, e *pb.Empty) (*pb.User, error) {
-	token, err := utils.GetAuthorizationToken(ctx)
+	token, err := util.GetAuthorizationToken(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	claims, err := utils.GetJWTClaims(token, os.Getenv("JWT_SECRET"))
+	claims, err := util.GetJWTClaims(token, util.JwtSecret)
 	if err != nil {
 		return nil, err
 	}
@@ -36,9 +35,9 @@ func (s *UserDataService) GetCurrentUserData(ctx context.Context, e *pb.Empty) (
 	}
 	userId := int64(userIdFloat)
 
-	return s.userRepository.GetUserDataById(context.TODO(), userId)
+	return s.userRepository.GetUserDataById(ctx, userId)
 }
 
 func (s *UserDataService) GetOtherUserData(ctx context.Context, userId *pb.UserId) (*pb.OtherUser, error) {
-	return s.userRepository.GetPublicUserDataById(context.TODO(), userId.Id)
+	return s.userRepository.GetPublicUserDataById(ctx, userId.Id)
 }

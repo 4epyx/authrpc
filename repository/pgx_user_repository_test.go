@@ -1,4 +1,4 @@
-package repositories_test
+package repository_test
 
 import (
 	"context"
@@ -8,10 +8,12 @@ import (
 	"time"
 
 	"github.com/4epyx/authrpc/pb"
-	"github.com/4epyx/authrpc/repositories"
-	"github.com/4epyx/authrpc/utils"
+	"github.com/4epyx/authrpc/repository"
+	"github.com/4epyx/authrpc/util"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
+
+// TODO: delete code repeating (btw. rewrite with testify/suit)
 
 var testUser *pb.RegisterUserRequest = &pb.RegisterUserRequest{
 	Email:    "aboba@gmail.com",
@@ -20,11 +22,11 @@ var testUser *pb.RegisterUserRequest = &pb.RegisterUserRequest{
 }
 
 func setupDatabase(ctx context.Context) (*pgxpool.Pool, error) {
-	db, err := utils.ConnectToDB(ctx, os.Getenv("TEST_DB_URL"))
+	db, err := util.ConnectToDB(ctx, os.Getenv("TEST_DB_URL"))
 	if err != nil {
 		return nil, err
 	}
-	if err := utils.MigrateTable(ctx, db); err != nil {
+	if err := util.MigrateTable(ctx, db); err != nil {
 		return nil, err
 	}
 
@@ -46,11 +48,11 @@ func TestPgxUserRepository_CreateUser(t *testing.T) {
 	defer db.Close()
 	defer db.Exec(ctx, "DROP TABLE users")
 
-	if err := utils.MigrateTable(ctx, db); err != nil {
+	if err := util.MigrateTable(ctx, db); err != nil {
 		t.Fatal("failed to migrate table")
 	}
 
-	r := repositories.NewPgxUserRepository(db)
+	r := repository.NewPgxUserRepository(db)
 
 	tests := []struct {
 		name    string
@@ -158,14 +160,14 @@ func TestPgxUserRepository_GetUserLoginData(t *testing.T) {
 	defer db.Close()
 	defer db.Exec(ctx, "DROP TABLE users")
 
-	if err := utils.MigrateTable(ctx, db); err != nil {
+	if err := util.MigrateTable(ctx, db); err != nil {
 		t.Fatal("failed to migrate table")
 	}
 
-	r := repositories.NewPgxUserRepository(db)
+	r := repository.NewPgxUserRepository(db)
 	r.CreateUser(ctx, testUser)
 
-	wantUser := &utils.User{
+	wantUser := &util.User{
 		Id:       1,
 		Email:    testUser.Email,
 		Password: testUser.Password,
@@ -178,7 +180,7 @@ func TestPgxUserRepository_GetUserLoginData(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *utils.User
+		want    *util.User
 		wantErr bool
 	}{
 		{
@@ -235,11 +237,11 @@ func TestPgxUserRepository_GetUserDataById(t *testing.T) {
 	defer db.Close()
 	defer db.Exec(ctx, "DROP TABLE users")
 
-	if err := utils.MigrateTable(ctx, db); err != nil {
+	if err := util.MigrateTable(ctx, db); err != nil {
 		t.Fatal("failed to migrate table")
 	}
 
-	r := repositories.NewPgxUserRepository(db)
+	r := repository.NewPgxUserRepository(db)
 	r.CreateUser(ctx, testUser)
 
 	wantUser := &pb.User{
@@ -279,7 +281,7 @@ func TestPgxUserRepository_GetUserDataById(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := repositories.NewPgxUserRepository(db)
+			r := repository.NewPgxUserRepository(db)
 			got, err := r.GetUserDataById(tt.args.ctx, tt.args.userId)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PgxUserRepository.GetUserDataById() error = %v, wantErr %v", err, tt.wantErr)
@@ -303,11 +305,11 @@ func TestPgxUserRepository_GetPublicUserDataById(t *testing.T) {
 	defer db.Close()
 	defer db.Exec(ctx, "DROP TABLE users")
 
-	if err := utils.MigrateTable(ctx, db); err != nil {
+	if err := util.MigrateTable(ctx, db); err != nil {
 		t.Fatal("failed to migrate table")
 	}
 
-	r := repositories.NewPgxUserRepository(db)
+	r := repository.NewPgxUserRepository(db)
 	r.CreateUser(ctx, testUser)
 
 	wantUser := &pb.OtherUser{

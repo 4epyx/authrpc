@@ -1,4 +1,4 @@
-package utils_test
+package util_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/4epyx/authrpc/utils"
+	"github.com/4epyx/authrpc/util"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -65,7 +65,7 @@ func TestConnectToDB(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := utils.ConnectToDB(tt.args.ctx, tt.args.connectionURL)
+			_, err := util.ConnectToDB(tt.args.ctx, tt.args.connectionURL)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ConnectToDB() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -83,7 +83,7 @@ func TestMigrateTable(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	db, err := utils.ConnectToDB(ctx, os.Getenv("TEST_DB_URL"))
+	db, err := util.ConnectToDB(ctx, os.Getenv("TEST_DB_URL"))
 	if err != nil {
 		t.Error("Failed to connect to database")
 	}
@@ -106,7 +106,7 @@ func TestMigrateTable(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := utils.MigrateTable(tt.args.ctx, tt.args.conn); (err != nil) != tt.wantErr {
+			if err := util.MigrateTable(tt.args.ctx, tt.args.conn); (err != nil) != tt.wantErr {
 				t.Fatalf("MigrateTable() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			defer db.Exec(ctx, "DROP TABLE users")

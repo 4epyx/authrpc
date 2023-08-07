@@ -1,18 +1,18 @@
-package utils_test
+package util_test
 
 import (
 	"testing"
 
-	"github.com/4epyx/authrpc/utils"
+	"github.com/4epyx/authrpc/util"
 )
 
 func TestTokenUtils(t *testing.T) {
 	type args struct {
-		user      *utils.User
-		secretKey string
+		user      *util.User
+		secretKey []byte
 	}
 
-	secret := "test_secret"
+	secret := []byte("test_secre.t")
 
 	tests := []struct {
 		name    string
@@ -22,7 +22,7 @@ func TestTokenUtils(t *testing.T) {
 		{
 			name: "smoke test",
 			args: args{
-				user: &utils.User{
+				user: &util.User{
 					Id:       1,
 					Email:    "user@example.com",
 					Password: "12345",
@@ -34,13 +34,13 @@ func TestTokenUtils(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			token, err := utils.GenerateUserAccessToken(tt.args.user, tt.args.secretKey)
+			token, err := util.GenerateUserAccessToken(tt.args.user, tt.args.secretKey)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GenerateUserAccessToken() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			decoded, err := utils.GetJWTClaims(token, secret)
+			decoded, err := util.GetJWTClaims(token, secret)
 			if err != nil {
 				t.Errorf("GetJWTClaims() error: %v", err)
 			}

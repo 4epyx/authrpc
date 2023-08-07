@@ -15,7 +15,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-// TODO: logger
 func main() {
 	logger, err := util.GetTextFileLogger("./app.log")
 	if err != nil {

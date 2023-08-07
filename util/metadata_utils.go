@@ -36,7 +36,6 @@ func GetAuthorizationToken(ctx context.Context) (string, error) {
 	}
 
 	token := strings.TrimPrefix(auth, "Bearer ")
-	fmt.Println(token)
 
 	return token, nil
 }

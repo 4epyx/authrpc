@@ -26,7 +26,7 @@ func NewUserDataService(userRepository repository.UserRepository, logger zerolog
 func (s *UserDataService) GetCurrentUserData(ctx context.Context, e *pb.Empty) (*pb.User, error) {
 	token, err := util.GetAuthorizationToken(ctx)
 	if err != nil {
-		s.log.Info().Err(err).Send()
+		s.log.Info().Str("method", "GetCurrentUserData").Err(err).Send()
 		return nil, err
 	}
 

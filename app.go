@@ -102,5 +102,5 @@ func registerServices(grpcServer *grpc.Server, repo repository.UserRepository, b
 	pb.RegisterRegisterServiceServer(grpcServer, service.NewRegisterService(repo, baseLogger.With().Str("service", "RegisterService").Logger()))
 	pb.RegisterLoginServiceServer(grpcServer, service.NewLoginService(repo, baseLogger.With().Str("service", "LoginService").Logger()))
 	pb.RegisterUserDataServiceServer(grpcServer, service.NewUserDataService(repo, baseLogger.With().Str("service", "UserDataService").Logger()))
-	pb.RegisterAuthorizationServiceServer(grpcServer, service.NewAuthorizationService())
+	pb.RegisterAuthorizationServiceServer(grpcServer, service.NewAuthorizationService(baseLogger.With().Str("service", "AuthService").Logger()))
 }

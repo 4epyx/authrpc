@@ -194,7 +194,7 @@ var LoginService_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthorizationServiceClient interface {
-	IsAuthorized(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*BoolResponse, error)
+	AuthorizeUser(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AuthUserData, error)
 }
 
 type authorizationServiceClient struct {
@@ -205,9 +205,9 @@ func NewAuthorizationServiceClient(cc grpc.ClientConnInterface) AuthorizationSer
 	return &authorizationServiceClient{cc}
 }
 
-func (c *authorizationServiceClient) IsAuthorized(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, "/auth.AuthorizationService/IsAuthorized", in, out, opts...)
+func (c *authorizationServiceClient) AuthorizeUser(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AuthUserData, error) {
+	out := new(AuthUserData)
+	err := c.cc.Invoke(ctx, "/auth.AuthorizationService/AuthorizeUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -218,7 +218,7 @@ func (c *authorizationServiceClient) IsAuthorized(ctx context.Context, in *Acces
 // All implementations must embed UnimplementedAuthorizationServiceServer
 // for forward compatibility
 type AuthorizationServiceServer interface {
-	IsAuthorized(context.Context, *AccessToken) (*BoolResponse, error)
+	AuthorizeUser(context.Context, *Empty) (*AuthUserData, error)
 	mustEmbedUnimplementedAuthorizationServiceServer()
 }
 
@@ -226,8 +226,8 @@ type AuthorizationServiceServer interface {
 type UnimplementedAuthorizationServiceServer struct {
 }
 
-func (UnimplementedAuthorizationServiceServer) IsAuthorized(context.Context, *AccessToken) (*BoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IsAuthorized not implemented")
+func (UnimplementedAuthorizationServiceServer) AuthorizeUser(context.Context, *Empty) (*AuthUserData, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeUser not implemented")
 }
 func (UnimplementedAuthorizationServiceServer) mustEmbedUnimplementedAuthorizationServiceServer() {}
 
@@ -242,20 +242,20 @@ func RegisterAuthorizationServiceServer(s grpc.ServiceRegistrar, srv Authorizati
 	s.RegisterService(&AuthorizationService_ServiceDesc, srv)
 }
 
-func _AuthorizationService_IsAuthorized_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccessToken)
+func _AuthorizationService_AuthorizeUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthorizationServiceServer).IsAuthorized(ctx, in)
+		return srv.(AuthorizationServiceServer).AuthorizeUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.AuthorizationService/IsAuthorized",
+		FullMethod: "/auth.AuthorizationService/AuthorizeUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthorizationServiceServer).IsAuthorized(ctx, req.(*AccessToken))
+		return srv.(AuthorizationServiceServer).AuthorizeUser(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -268,8 +268,8 @@ var AuthorizationService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthorizationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "IsAuthorized",
-			Handler:    _AuthorizationService_IsAuthorized_Handler,
+			MethodName: "AuthorizeUser",
+			Handler:    _AuthorizationService_AuthorizeUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

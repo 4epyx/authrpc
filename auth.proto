@@ -13,7 +13,7 @@ service LoginService{
 }
 
 service AuthorizationService {
-    rpc IsAuthorized(AccessToken) returns (BoolResponse) {}
+    rpc AuthorizeUser(Empty) returns (AuthUserData) {}
 }
 
 service UserDataService {
@@ -46,6 +46,10 @@ message OtherUser {
 }
 message UserId {
     int64 id = 1;
+}
+message AuthUserData {
+    int64 id = 1;
+    string email = 2;
 }
 
 message BoolResponse {

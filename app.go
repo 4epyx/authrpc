@@ -11,10 +11,17 @@ import (
 	"github.com/4epyx/authrpc/repository"
 	"github.com/4epyx/authrpc/service"
 	"github.com/4epyx/authrpc/util"
+	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 )
 
+// TODO: logger
 func main() {
+	logger, err := util.GetTextFileLogger("./app.log")
+	if err != nil {
+		panic(err)
+	}
+
 	host, port := getHostAndPort()
 
 	if err := setupJwtSecret(); err != nil {
@@ -34,7 +41,7 @@ func main() {
 		panic(err)
 	}
 
-	registerServices(grpcServer, repo)
+	registerServices(grpcServer, repo, logger)
 
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
@@ -91,10 +98,9 @@ func getDbUrl() (string, error) {
 	return dbUrl, nil
 }
 
-func registerServices(grpcServer *grpc.Server, repo repository.UserRepository) {
-	pb.RegisterRegisterServiceServer(grpcServer, service.NewRegisterService(repo))
-	pb.RegisterLoginServiceServer(grpcServer, service.NewLoginService(repo))
-	pb.RegisterUserDataServiceServer(grpcServer, service.NewUserDataService(repo))
+func registerServices(grpcServer *grpc.Server, repo repository.UserRepository, baseLogger zerolog.Logger) {
+	pb.RegisterRegisterServiceServer(grpcServer, service.NewRegisterService(repo, baseLogger.With().Str("service", "RegisterService").Logger()))
+	pb.RegisterLoginServiceServer(grpcServer, service.NewLoginService(repo, baseLogger.With().Str("service", "LoginService").Logger()))
+	pb.RegisterUserDataServiceServer(grpcServer, service.NewUserDataService(repo, baseLogger.With().Str("service", "UserDataService").Logger()))
 	pb.RegisterAuthorizationServiceServer(grpcServer, service.NewAuthorizationService())
-
 }

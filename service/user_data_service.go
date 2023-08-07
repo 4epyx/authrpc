@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/4epyx/authrpc/pb"
 	"github.com/4epyx/authrpc/repository"
@@ -49,7 +48,7 @@ func (s *UserDataService) GetCurrentUserData(ctx context.Context, e *pb.Empty) (
 		s.log.Error().Str("method", "GetCurrentUserData").Err(err).Send()
 	}
 
-	s.log.Info().Str("method", "GetCurrentUserData").Int64("user_id", user.Id).Msg(fmt.Sprintf("user with id %d gets himself data"))
+	s.log.Info().Str("method", "GetCurrentUserData").Int64("user_id", user.Id).Msg("gets himself data")
 	return user, nil
 }
 

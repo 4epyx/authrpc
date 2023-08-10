@@ -21,6 +21,7 @@ func GetHeaderValue(ctx context.Context, headerName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(md)
 	header := md[headerName]
 	if len(header) == 0 {
 		return "", fmt.Errorf("header %s not found", headerName)
